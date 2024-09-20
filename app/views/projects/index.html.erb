@@ -18,7 +18,7 @@
   <% @projects.each do |project| %>
     <li class="project flex flex-column txt-align-center gap-half max-width">
       <div class="project__windshield position-relative flex flex-wrap gap justify-center align-center border-radius border"  style="view-transition-name: windshield_<%= project.id %>">
-        <% project.bubbles.left_joins(:comments, :boosts).group(:id).order(Arel.sql("COUNT(comments.id) + COUNT(boosts.id) DESC")).limit(10).each do |bubble| %>
+        <% project.bubbles.left_joins(:comments, :boosts).group(:id).order(Arel.sql("COUNT(comments.id) + COUNT(boosts.id) DESC")).limit(10).shuffle.each do |bubble| %>
           <div class="bubble" style="--bubble-color: <%= bubble.color %>; <%= bubble_rotation(bubble) %> <%= bubble_size(bubble) %>">
             <svg class="bubble__svg" style="fill: <%= bubble.color %>; stroke: <%= bubble.color %>;" viewBox="0 0 990 990" xmlns="http://www.w3.org/2000/svg">
               <path d="m0 0h990v990h-990z" fill="none" stroke="none" />
