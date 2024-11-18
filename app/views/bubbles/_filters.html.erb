@@ -1,7 +1,13 @@
 <div class="flex flex-column gap-half align-center" data-controller="dialog filter-form"
     data-action="keydown.esc->dialog#close click@document->dialog#closeOnClickOutside turbo:before-cache@document->dialog#close">
   <h1 class="txt-large flex align-center gap-half">
-    <%= filter.buckets.first&.name || "All projects" %>
+    <% if filter.buckets.none? %>
+      All projects
+    <% elsif filter.buckets.many? %>
+      <%= pluralize(filter.buckets.size, "project") %>
+    <% else %>
+      <%= filter.buckets.first.name %>
+    <% end %>
   </h1>
 
   <div class="filters flex-inline align-center gap-half">
