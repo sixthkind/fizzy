@@ -25,10 +25,10 @@ module Filter::Params
     end
   end
 
-  def params_without(name, value)
+  def params_without(key, value)
     to_params.tap do |params|
-      params[name].delete(value) if params[name].is_a?(Array)
-      params.delete(name) if params[name] == value
+      params[key].delete(value) if params[key].is_a?(Array)
+      params.delete(key) if params[key] == value
     end
   end
 end
