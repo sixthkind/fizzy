@@ -3,11 +3,12 @@
     <aside class="position-relative border pad border-radius" style="--bubble-color: <%= @bubble.color %>"
         data-controller="dialog" data-action="keydown.esc->dialog#close click@document->dialog#closeOnClickOutside">
       <div class="flex align-center justify-start gap-half">
-        <button class="btn txt-small" data-action="click->dialog#toggle" data-dialog-modal-value="true">
+        <button class="btn txt-small borderless" data-action="click->dialog#toggle" data-dialog-modal-value="true">
           <%= image_tag "bolt.svg", aria: { hidden: true }, size: 24 %>
           <span class="for-screen-reader">Choose a workflow</span>
         </button>
-        <strong class="txt-large"><%= @selected_workflow.name %></strong>
+        <strong class="txt-medium"><%= @selected_workflow.name %></strong>
+        <span class="btn btn--placeholder" aria-hidden="true"></span>
       </div>
 
       <dialog class="workflow__popup panel fill-white shadow" data-dialog-target="dialog">
