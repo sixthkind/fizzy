@@ -82,6 +82,8 @@ module EventsHelper
       "#{ event.creator.name } closed <span style='color: var(--bubble-color)'>#{ event.bubble.title }</span>".html_safe
     when "staged"
       "#{event.creator.name} changed the stage to #{event.stage_name} on <span style='color: var(--bubble-color)'>#{ event.bubble.title }</span>".html_safe
+    when "unstaged"
+      "#{event.creator.name} removed <span style='color: var(--bubble-color)'>#{ event.bubble.title }</span> from the #{event.stage_name} stage".html_safe
     when "due_date_added"
       "#{event.creator.name} set the date to #{event.particulars.dig('particulars', 'due_date').to_date.strftime('%B %-d')} on <span style='color: var(--bubble-color)'>#{ event.bubble.title }</span>".html_safe
     when "due_date_changed"
@@ -100,6 +102,8 @@ module EventsHelper
     when "boosted"
       "thumb-up"
     when "staged"
+      "bolt"
+    when "unstaged"
       "bolt"
     when "commented"
       "comment"
