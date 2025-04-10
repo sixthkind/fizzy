@@ -21,7 +21,7 @@ columns:
     default_function:
     collation:
     comment:
-  - &23 !ruby/object:ActiveRecord::ConnectionAdapters::SQLite3::Column
+  - &24 !ruby/object:ActiveRecord::ConnectionAdapters::SQLite3::Column
     auto_increment:
     name: collection_id
     cast_type: *1
@@ -341,7 +341,7 @@ columns:
   - *5
   - *19
   - *20
-  - &24 !ruby/object:ActiveRecord::ConnectionAdapters::SQLite3::Column
+  - &21 !ruby/object:ActiveRecord::ConnectionAdapters::SQLite3::Column
     auto_increment:
     name: card_id
     cast_type: *1
@@ -367,16 +367,21 @@ columns:
     comment:
   - *6
   - *9
+  card_goldnesses:
+  - *5
+  - *21
+  - *6
+  - *9
   cards:
   - *5
   - !ruby/object:ActiveRecord::ConnectionAdapters::SQLite3::Column
     auto_increment:
     name: activity_score
-    cast_type: &21 !ruby/object:ActiveModel::Type::Float
+    cast_type: &22 !ruby/object:ActiveModel::Type::Float
       precision:
       scale:
       limit:
-    sql_type_metadata: &22 !ruby/object:ActiveRecord::ConnectionAdapters::SqlTypeMetadata
+    sql_type_metadata: &23 !ruby/object:ActiveRecord::ConnectionAdapters::SqlTypeMetadata
       sql_type: float
       type: :float
       limit:
@@ -400,8 +405,8 @@ columns:
   - !ruby/object:ActiveRecord::ConnectionAdapters::SQLite3::Column
     auto_increment:
     name: activity_score_order
-    cast_type: *21
-    sql_type_metadata: *22
+    cast_type: *22
+    sql_type_metadata: *23
     'null': false
     default: 0.0
     default_function:
@@ -417,7 +422,7 @@ columns:
     default_function:
     collation:
     comment:
-  - *23
+  - *24
   - !ruby/object:ActiveRecord::ConnectionAdapters::SQLite3::Column
     auto_increment:
     name: comments_count
@@ -525,7 +530,7 @@ columns:
   - *9
   closures:
   - *5
-  - *24
+  - *21
   - *6
   - !ruby/object:ActiveRecord::ConnectionAdapters::SQLite3::Column
     auto_increment:
@@ -593,7 +598,7 @@ columns:
     collation:
     comment:
   collections_filters:
-  - *23
+  - *24
   - *18
   comments:
   - *5
@@ -619,7 +624,7 @@ columns:
     default_function:
     collation:
     comment:
-  - *24
+  - *21
   - *6
   - *25
   - !ruby/object:ActiveRecord::ConnectionAdapters::SQLite3::Column
@@ -712,7 +717,7 @@ columns:
     comment:
   messages:
   - *5
-  - *24
+  - *21
   - *6
   - !ruby/object:ActiveRecord::ConnectionAdapters::SQLite3::Column
     auto_increment:
@@ -737,7 +742,7 @@ columns:
   - *9
   notifications:
   - *5
-  - *24
+  - *21
   - *6
   - !ruby/object:ActiveRecord::ConnectionAdapters::SQLite3::Column
     auto_increment:
@@ -783,7 +788,7 @@ columns:
   - *30
   pins:
   - *5
-  - *24
+  - *21
   - *6
   - *9
   - *30
@@ -869,7 +874,7 @@ columns:
   - *30
   taggings:
   - *5
-  - *24
+  - *21
   - *6
   - *31
   - *9
@@ -927,7 +932,7 @@ columns:
   - *9
   watches:
   - *5
-  - *24
+  - *21
   - *6
   - *9
   - *30
@@ -984,6 +989,7 @@ primary_keys:
   assigners_filters:
   assignments: id
   card_engagements: id
+  card_goldnesses: id
   cards: id
   closure_reasons: id
   closures: id
@@ -1020,6 +1026,7 @@ data_sources:
   assigners_filters: true
   assignments: true
   card_engagements: true
+  card_goldnesses: true
   cards: true
   closure_reasons: true
   closures: true
@@ -1048,10 +1055,9 @@ indexes:
   accesses:
   - !ruby/object:ActiveRecord::ConnectionAdapters::IndexDefinition
     table: accesses
-    name: index_accesses_on_collection_id_and_user_id
-    unique: true
+    name: index_accesses_on_user_id
+    unique: false
     columns:
-    - collection_id
     - user_id
     lengths: {}
     orders: {}
@@ -1081,9 +1087,10 @@ indexes:
     valid: true
   - !ruby/object:ActiveRecord::ConnectionAdapters::IndexDefinition
     table: accesses
-    name: index_accesses_on_user_id
-    unique: false
+    name: index_accesses_on_collection_id_and_user_id
+    unique: true
     columns:
+    - collection_id
     - user_id
     lengths: {}
     orders: {}
@@ -1303,10 +1310,9 @@ indexes:
   assignments:
   - !ruby/object:ActiveRecord::ConnectionAdapters::IndexDefinition
     table: assignments
-    name: index_assignments_on_assignee_id_and_card_id
-    unique: true
+    name: index_assignments_on_card_id
+    unique: false
     columns:
-    - assignee_id
     - card_id
     lengths: {}
     orders: {}
@@ -1320,9 +1326,10 @@ indexes:
     valid: true
   - !ruby/object:ActiveRecord::ConnectionAdapters::IndexDefinition
     table: assignments
-    name: index_assignments_on_card_id
-    unique: false
+    name: index_assignments_on_assignee_id_and_card_id
+    unique: true
     columns:
+    - assignee_id
     - card_id
     lengths: {}
     orders: {}
@@ -1351,7 +1358,57 @@ indexes:
     nulls_not_distinct:
     comment:
     valid: true
+  card_goldnesses:
+  - !ruby/object:ActiveRecord::ConnectionAdapters::IndexDefinition
+    table: card_goldnesses
+    name: index_card_goldnesses_on_card_id
+    unique: true
+    columns:
+    - card_id
+    lengths: {}
+    orders: {}
+    opclasses: {}
+    where:
+    type:
+    using:
+    include:
+    nulls_not_distinct:
+    comment:
+    valid: true
   cards:
+  - !ruby/object:ActiveRecord::ConnectionAdapters::IndexDefinition
+    table: cards
+    name: index_cards_on_stage_id
+    unique: false
+    columns:
+    - stage_id
+    lengths: {}
+    orders: {}
+    opclasses: {}
+    where:
+    type:
+    using:
+    include:
+    nulls_not_distinct:
+    comment:
+    valid: true
+  - !ruby/object:ActiveRecord::ConnectionAdapters::IndexDefinition
+    table: cards
+    name: index_cards_on_last_active_at_and_status
+    unique: false
+    columns:
+    - last_active_at
+    - status
+    lengths: {}
+    orders: {}
+    opclasses: {}
+    where:
+    type:
+    using:
+    include:
+    nulls_not_distinct:
+    comment:
+    valid: true
   - !ruby/object:ActiveRecord::ConnectionAdapters::IndexDefinition
     table: cards
     name: index_cards_on_collection_id
@@ -1384,39 +1441,6 @@ indexes:
     nulls_not_distinct:
     comment:
     valid: true
-  - !ruby/object:ActiveRecord::ConnectionAdapters::IndexDefinition
-    table: cards
-    name: index_cards_on_last_active_at_and_status
-    unique: false
-    columns:
-    - last_active_at
-    - status
-    lengths: {}
-    orders: {}
-    opclasses: {}
-    where:
-    type:
-    using:
-    include:
-    nulls_not_distinct:
-    comment:
-    valid: true
-  - !ruby/object:ActiveRecord::ConnectionAdapters::IndexDefinition
-    table: cards
-    name: index_cards_on_stage_id
-    unique: false
-    columns:
-    - stage_id
-    lengths: {}
-    orders: {}
-    opclasses: {}
-    where:
-    type:
-    using:
-    include:
-    nulls_not_distinct:
-    comment:
-    valid: true
   closure_reasons:
   - !ruby/object:ActiveRecord::ConnectionAdapters::IndexDefinition
     table: closure_reasons
@@ -1435,6 +1459,22 @@ indexes:
     comment:
     valid: true
   closures:
+  - !ruby/object:ActiveRecord::ConnectionAdapters::IndexDefinition
+    table: closures
+    name: index_closures_on_user_id
+    unique: false
+    columns:
+    - user_id
+    lengths: {}
+    orders: {}
+    opclasses: {}
+    where:
+    type:
+    using:
+    include:
+    nulls_not_distinct:
+    comment:
+    valid: true
   - !ruby/object:ActiveRecord::ConnectionAdapters::IndexDefinition
     table: closures
     name: index_closures_on_card_id
@@ -1468,29 +1508,13 @@ indexes:
     nulls_not_distinct:
     comment:
     valid: true
-  - !ruby/object:ActiveRecord::ConnectionAdapters::IndexDefinition
-    table: closures
-    name: index_closures_on_user_id
-    unique: false
-    columns:
-    - user_id
-    lengths: {}
-    orders: {}
-    opclasses: {}
-    where:
-    type:
-    using:
-    include:
-    nulls_not_distinct:
-    comment:
-    valid: true
   collections:
   - !ruby/object:ActiveRecord::ConnectionAdapters::IndexDefinition
     table: collections
-    name: index_collections_on_account_id
+    name: index_collections_on_workflow_id
     unique: false
     columns:
-    - account_id
+    - workflow_id
     lengths: {}
     orders: {}
     opclasses: {}
@@ -1519,10 +1543,10 @@ indexes:
     valid: true
   - !ruby/object:ActiveRecord::ConnectionAdapters::IndexDefinition
     table: collections
-    name: index_collections_on_workflow_id
+    name: index_collections_on_account_id
     unique: false
     columns:
-    - workflow_id
+    - account_id
     lengths: {}
     orders: {}
     opclasses: {}
@@ -1536,10 +1560,10 @@ indexes:
   collections_filters:
   - !ruby/object:ActiveRecord::ConnectionAdapters::IndexDefinition
     table: collections_filters
-    name: index_collections_filters_on_collection_id
+    name: index_collections_filters_on_filter_id
     unique: false
     columns:
-    - collection_id
+    - filter_id
     lengths: {}
     orders: {}
     opclasses: {}
@@ -1552,10 +1576,10 @@ indexes:
     valid: true
   - !ruby/object:ActiveRecord::ConnectionAdapters::IndexDefinition
     table: collections_filters
-    name: index_collections_filters_on_filter_id
+    name: index_collections_filters_on_collection_id
     unique: false
     columns:
-    - filter_id
+    - collection_id
     lengths: {}
     orders: {}
     opclasses: {}
@@ -1604,22 +1628,6 @@ indexes:
   events:
   - !ruby/object:ActiveRecord::ConnectionAdapters::IndexDefinition
     table: events
-    name: index_events_on_card_id
-    unique: false
-    columns:
-    - card_id
-    lengths: {}
-    orders: {}
-    opclasses: {}
-    where:
-    type:
-    using:
-    include:
-    nulls_not_distinct:
-    comment:
-    valid: true
-  - !ruby/object:ActiveRecord::ConnectionAdapters::IndexDefinition
-    table: events
     name: index_events_on_summary_id_and_action
     unique: false
     columns:
@@ -1641,6 +1649,22 @@ indexes:
     unique: false
     columns:
     - creator_id
+    lengths: {}
+    orders: {}
+    opclasses: {}
+    where:
+    type:
+    using:
+    include:
+    nulls_not_distinct:
+    comment:
+    valid: true
+  - !ruby/object:ActiveRecord::ConnectionAdapters::IndexDefinition
+    table: events
+    name: index_events_on_card_id
+    unique: false
+    columns:
+    - card_id
     lengths: {}
     orders: {}
     opclasses: {}
@@ -1738,22 +1762,6 @@ indexes:
   messages:
   - !ruby/object:ActiveRecord::ConnectionAdapters::IndexDefinition
     table: messages
-    name: index_messages_on_card_id
-    unique: false
-    columns:
-    - card_id
-    lengths: {}
-    orders: {}
-    opclasses: {}
-    where:
-    type:
-    using:
-    include:
-    nulls_not_distinct:
-    comment:
-    valid: true
-  - !ruby/object:ActiveRecord::ConnectionAdapters::IndexDefinition
-    table: messages
     name: index_messages_on_messageable
     unique: true
     columns:
@@ -1769,10 +1777,9 @@ indexes:
     nulls_not_distinct:
     comment:
     valid: true
-  notifications:
   - !ruby/object:ActiveRecord::ConnectionAdapters::IndexDefinition
-    table: notifications
-    name: index_notifications_on_card_id
+    table: messages
+    name: index_messages_on_card_id
     unique: false
     columns:
     - card_id
@@ -1786,6 +1793,7 @@ indexes:
     nulls_not_distinct:
     comment:
     valid: true
+  notifications:
   - !ruby/object:ActiveRecord::ConnectionAdapters::IndexDefinition
     table: notifications
     name: index_notifications_on_user_id
@@ -1855,13 +1863,28 @@ indexes:
     nulls_not_distinct:
     comment:
     valid: true
+  - !ruby/object:ActiveRecord::ConnectionAdapters::IndexDefinition
+    table: notifications
+    name: index_notifications_on_card_id
+    unique: false
+    columns:
+    - card_id
+    lengths: {}
+    orders: {}
+    opclasses: {}
+    where:
+    type:
+    using:
+    include:
+    nulls_not_distinct:
+    comment:
+    valid: true
   pins:
   - !ruby/object:ActiveRecord::ConnectionAdapters::IndexDefinition
     table: pins
-    name: index_pins_on_card_id_and_user_id
-    unique: true
+    name: index_pins_on_user_id
+    unique: false
     columns:
-    - card_id
     - user_id
     lengths: {}
     orders: {}
@@ -1891,9 +1914,10 @@ indexes:
     valid: true
   - !ruby/object:ActiveRecord::ConnectionAdapters::IndexDefinition
     table: pins
-    name: index_pins_on_user_id
-    unique: false
+    name: index_pins_on_card_id_and_user_id
+    unique: true
     columns:
+    - card_id
     - user_id
     lengths: {}
     orders: {}
@@ -1959,10 +1983,9 @@ indexes:
   taggings:
   - !ruby/object:ActiveRecord::ConnectionAdapters::IndexDefinition
     table: taggings
-    name: index_taggings_on_card_id_and_tag_id
-    unique: true
+    name: index_taggings_on_tag_id
+    unique: false
     columns:
-    - card_id
     - tag_id
     lengths: {}
     orders: {}
@@ -1976,9 +1999,10 @@ indexes:
     valid: true
   - !ruby/object:ActiveRecord::ConnectionAdapters::IndexDefinition
     table: taggings
-    name: index_taggings_on_tag_id
-    unique: false
+    name: index_taggings_on_card_id_and_tag_id
+    unique: true
     columns:
+    - card_id
     - tag_id
     lengths: {}
     orders: {}
@@ -2076,10 +2100,10 @@ indexes:
   watches:
   - !ruby/object:ActiveRecord::ConnectionAdapters::IndexDefinition
     table: watches
-    name: index_watches_on_card_id
+    name: index_watches_on_user_id
     unique: false
     columns:
-    - card_id
+    - user_id
     lengths: {}
     orders: {}
     opclasses: {}
@@ -2092,10 +2116,10 @@ indexes:
     valid: true
   - !ruby/object:ActiveRecord::ConnectionAdapters::IndexDefinition
     table: watches
-    name: index_watches_on_user_id
+    name: index_watches_on_card_id
     unique: false
     columns:
-    - user_id
+    - card_id
     lengths: {}
     orders: {}
     opclasses: {}
@@ -2140,4 +2164,4 @@ indexes:
     nulls_not_distinct:
     comment:
     valid: true
-version: 20250409201424
+version: 20250410141409

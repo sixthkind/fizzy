@@ -1,6 +1,7 @@
 class Card < ApplicationRecord
-  include Assignable, Boostable, Colored, Commentable, Engageable, Eventable,
-    Messages, Notifiable, Pinnable, Closeable, Scorable, Searchable, Staged, Statuses, Taggable, Watchable
+  include Assignable, Boostable, Colored, Commentable, Engageable, Eventable, Golden,
+    Messages, Notifiable, Pinnable, Closeable, Scorable, Searchable, Staged,
+    Statuses, Taggable, Watchable
 
   belongs_to :collection, touch: true
   belongs_to :creator, class_name: "User", default: -> { Current.user }

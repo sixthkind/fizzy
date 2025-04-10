@@ -1,5 +1,5 @@
 <% cache card do %>
-  <article class="card shadow border flex flex-column position-relative txt-align-start border-radius"
+  <article class="card shadow border flex flex-column position-relative txt-align-start border-radius <%= 'card--golden' if card.golden? %>"
       style="--card-color: <%= card.color %>; view-transition-name: <%= dom_id(card, :ticket) %>;"
       id="<%= dom_id(card, :ticket) %>">
     <header class="card__header flex align-center gap min-width">

@@ -55,11 +55,7 @@
     <%= render "cards/display/perma", card: @card %>
 
     <div class="card__actions flex flex-column gap-half">
-      <button class="car__star-button btn">
-        <%= icon_tag "star" %>
-        <span class="for-screen-reader">Star this card</span>
-        <input type="checkbox" class="card__star-input">
-      </button>
+      <%= render "cards/golden_toggle" %>
 
       <%= render "cards/image", card: @card %>
       <%= button_to collection_card_path(@card.collection, @card),

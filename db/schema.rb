@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_04_09_201424) do
+ActiveRecord::Schema[8.1].define(version: 2025_04_10_141409) do
   create_table "accesses", force: :cascade do |t|
     t.integer "collection_id", null: false
     t.datetime "created_at", null: false
@@ -100,6 +100,13 @@ ActiveRecord::Schema[8.1].define(version: 2025_04_09_201424) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["card_id"], name: "index_card_engagements_on_card_id"
+  end
+
+  create_table "card_goldnesses", force: :cascade do |t|
+    t.integer "card_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["card_id"], name: "index_card_goldnesses_on_card_id", unique: true
   end
 
   create_table "cards", force: :cascade do |t|
@@ -333,6 +340,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_04_09_201424) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "card_goldnesses", "cards"
   add_foreign_key "cards", "workflow_stages", column: "stage_id"
   add_foreign_key "closures", "cards"
   add_foreign_key "closures", "users"

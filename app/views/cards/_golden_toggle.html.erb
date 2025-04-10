@@ -1,0 +1,11 @@
+<% if @card.golden? %>
+  <%= button_to card_goldeness_path(@card), method: :delete, class: "btn btn--reversed" do %>
+    <%= icon_tag "star" %>
+    <span class="for-screen-reader">Demote to normal</span>
+  <% end %>
+<% else %>
+  <%= button_to card_goldeness_path(@card), class: "btn" do %>
+    <%= icon_tag "star" %>
+    <span class="for-screen-reader">Promote to golden</span>
+  <% end %>
+<% end %>

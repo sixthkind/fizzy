@@ -97,6 +97,10 @@
     }
   }
 
+  .card--golden {
+    outline: 5px solid orange;
+  }
+
   .card__actions {
     position: absolute;
     inset: var(--actions-block-inset) auto auto calc(var(--actions-inline-inset) * -1);
