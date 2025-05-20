@@ -194,6 +194,7 @@
         .card__closed {
           aspect-ratio: unset;
           border-width: 0.5ch;
+          font-size: 0.75em;
           inset: auto 0 auto auto;
           transform: none;
         }
