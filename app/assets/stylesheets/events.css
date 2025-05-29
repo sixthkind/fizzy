@@ -157,7 +157,7 @@
     box-shadow:
       0 0 0 1px oklch(var(--lch-golden) / 75%),
       0 0 0.2em 0.2em oklch(var(--lch-golden) / 25%),
-      0 0 .7em 0.5em oklch(var(--lch-golden) / 25%) !important;
+      0 0 .7em 0.5em oklch(var(--lch-golden) / 25%);
 
     @media (prefers-color-scheme: dark) {
       --lch-golden: var(--lch-blue-medium);
@@ -169,7 +169,6 @@
     --hover-size: 0.15rem;
 
     box-shadow: 0 0 0 var(--hover-size) var(--hover-color);
-    /* z-index: 2; */
   }
 
   .event__collection {
