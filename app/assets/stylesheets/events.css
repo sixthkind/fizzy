@@ -5,6 +5,7 @@
   .events {
     --events-gap: 1ch;
     --events-border: 1px solid var(--color-ink-lighter);
+    --events-day-header-height: 1.75rem;
   }
 
   .events__day {
@@ -23,17 +24,34 @@
   }
 
   .events__day-header {
-    background-color: var(--color-ink);
-    border-radius: 0.2em;
-    display: block;
-    inline-size: fit-content;
-    line-height: 1.5;
-    margin-inline: auto;
-    padding: 0.5ch 1.3em;
-    position: absolute;
-    inset: 0 auto auto 50%;
-    translate: -50% -50%;
+    block-size: 0;
+    inset-block-start: calc(var(--events-day-header-height) / 2);
+    position: sticky;
     z-index: var(--z-events-day-header);
+
+    /* A blank strip to hide content as it scrolls beneath */
+    /* &:before {
+      background: var(--color-canvas);
+      block-size: calc((var(--events-day-header-height) - 1px) / 2);
+      content: "";
+      inset: 0 1px auto;
+      position: absolute;
+      translate: 0 -100%;
+    } */
+
+    time {
+      align-items: center;
+      background-color: var(--color-ink);
+      block-size: var(--events-day-header-height);
+      border-radius: 0.2em;
+      display: flex;
+      inline-size: fit-content;
+      inset: 0 auto auto 50%;
+      margin-inline: auto;
+      padding-inline: 1.5ch;
+      position: absolute;
+      translate: -50% -50%;
+    }
   }
 
   .events__columns {
@@ -80,7 +98,7 @@
   .events__column-header {
     background-color: var(--color-canvas);
     grid-row-start: 1;
-    inset-block-start: calc(var(--events-gap) * -2);
+    inset-block-start: calc(var(--events-day-header-height) / 2);
     margin-block-end: var(--events-gap);
     padding-block: calc(var(--events-gap) * 3) var(--events-gap);
     position: sticky;
