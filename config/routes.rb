@@ -85,7 +85,7 @@ Rails.application.routes.draw do
     scope module: "sessions" do
       resources :transfers, only: %i[ show update ]
     end
-    get "launchpad", to: "sessions/launchpad#show"
+    resource :launchpad, only: %i[ show update ], controller: "sessions/launchpad"
   end
 
   namespace :signup do
