@@ -31,6 +31,7 @@
         spellcheck: "false" do %>
     <%= global_mentions_prompt %>
     <%= tags_prompt %>
+    <%= commands_prompt %>
   <% end %>
 
   <%=  hidden_field_tag "confirmed", nil, data: { terminal_target: "confirmation" } %>

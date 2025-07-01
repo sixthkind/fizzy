@@ -118,6 +118,7 @@ Rails.application.routes.draw do
     resources :cards
     resources :users
     resources :tags
+    resources :commands
 
     resources :collections do
       scope module: :collections do
