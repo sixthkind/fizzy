@@ -20,5 +20,5 @@
         placeholder: platform.desktop? ? "Press #{ hotkey_label(["ctrl", "K"]) } to search or type commands…" : "Search or type commands…",
         spellcheck: "false" %>
 
-  <%=  hidden_field_tag "confirmed", nil, data: { terminal_target: "confirmation" } %>
+  <%= hidden_field_tag "confirmed", nil, data: { terminal_target: "confirmation" } %>
 <% end %>
