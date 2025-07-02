@@ -6,12 +6,12 @@
 
     figure.node--selected {
       &:not(:has(img)) {
-        box-shadow: 0 0 0 var(--hover-size) var(--hover-color);
+        box-shadow: 0 0 0 var(--hover-size) var(--color-selected-dark);
       }
 
       &:has(img) {
         img {
-          box-shadow: 0 0 0 var(--hover-size) var(--hover-color);
+          box-shadow: 0 0 0 var(--hover-size) var(--color-selected-dark);
         }
       }
     }
