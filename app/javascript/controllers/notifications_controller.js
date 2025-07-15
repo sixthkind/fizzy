@@ -2,14 +2,10 @@ import { Controller } from "@hotwired/stimulus"
 import { post } from "@rails/request.js"
 import { pageIsTurboPreview } from "helpers/turbo_helpers"
 import { onNextEventLoopTick } from "helpers/timing_helpers"
-
-console.log("Notifications controller module loaded")
-
 export default class extends Controller {
   static values = { subscriptionsUrl: String }
 
   async connect() {
-    console.log("connected")
     if (!pageIsTurboPreview()) {
       if (window.notificationsPreviouslyReady) {
         onNextEventLoopTick(() => this.dispatch("ready"))
@@ -25,15 +21,16 @@ export default class extends Controller {
   }
 
   async attemptToSubscribe() {
-    console.log("attemptToSubscribe")
     if (this.#allowed) {
       const registration = await this.#serviceWorkerRegistration || await this.#registerServiceWorker()
 
       switch(Notification.permission) {
-        case "denied":  { break }
+        case "denied":  { console.log("Notification.permission: denied"); break }
         case "granted": { this.#subscribe(registration); break }
         case "default": { this.#requestPermissionAndSubscribe(registration) }
       }
+    } else {
+      console.log("Should display not-allowed notice")
     }
   }
 
