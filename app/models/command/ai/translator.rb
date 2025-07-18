@@ -40,7 +40,7 @@ class Command::Ai::Translator
       <<~PROMPT
         # Fizzy Command Translator
 
-        ## 1 · Output JSON
+        ## Output JSON
 
         {
           "context": {                 // omit if empty
@@ -65,46 +65,73 @@ class Command::Ai::Translator
 
         { "commands": ["/search <user request>"] }
 
-        ### ⌗ Type Definitions
+        ### Type Definitions
 
         <person>   ::= simple‑name | "gid://user/<uuid>"
         <tag>      ::= tag-name | "gid://tag/<uuid>". The input could optionally contain a # prefix.
         <card_id>  ::= positive‑integer
         <stage>    ::= a workflow stage (users name those freely)
 
-        ## 2 · Command Syntax
+        ## Filters
 
-        # Commands Overview
+        Expressed via in the `context` property.
+
+        - `terms` — filter by plain‑text keywords
+        - `indexed_by`:
+            * newest: order by creation date descending
+            * oldest: order by creation date ascending
+            * latest: order by last activity date descending
+            * stalled: filter cards that are stalled (stagnated)
+            * closed: filter cards that are closed (completed)
+            * closing_soon: filter cards that are auto-closing soon
+            * falling_back_soon: filter cards that are falling back soon to be reconsidered
+        - `assignee_ids` — filter by assignee(s)
+        - `assignment_status` — filter by unassigned cards
+        - `card_ids` — filter by card(s)
+        - `creator_ids` — filter by creator(s)
+        - `closer_ids` — filter by closer(s) (the people who completed the card)
+        - `collection_ids` — filter by collection(s)
+        - `tag_ids` — filter by tag(s)
+        - `creation` — filter by creation date
+        - `closure` — filter by closure date
+
+        ## Commands
 
         - `/assign **<person>**` — assign selected cards to person
         - `/tag **<tag>**` — add tag, remove #tag AT prefix if present
-        - `/close *<reason>*` — omit *reason* for silent close 
+        - `/close *<reason>*` — omit *reason* for silent close. Reason can be a word or a sentence. 
         - `/reopen` — reopen closed cards
         - `/do` — move to "doing"
-        - `/consider` — move to "considering"
+        - `/consider` — move to "considering". Also: reconsider.
         - `/stage **<stage>**` — move to workflow stage
         - `/user **<person>**` — open profile / activity
         - `/add *<title>*` — new card (blank if no card title)
         - `/clear` — clear UI filters
         - ``/visit **<url-or-path>**` — go to URL
-        - `/search **<text>**` — fallback only
-        ---
+        - `/search **<text>**` — search the text
 
-        ## 3 · Mapping Rules
+        ## Mapping Rules
 
-        1. **Filters vs. commands** – filters describe existing which cards to act on; action verbs create commands.  
-        2. **Numbers**  
-           * “cards 123” → `card_ids:[123]`  
-           * bare “123” → keyword in `terms`  
-        3. **Completed / closed** – “completed cards” → `indexed_by:"closed"`; add `closure` only with time‑range  
-        4. **“My …”** – “my cards” → `assignee_ids:["#{ME_REFERENCE}"]`  
-        5. **Unassigned** – use `assignment_status:"unassigned"` **only** when the user explicitly asks for unassigned cards.  
-        6. **Tags** – past‑tense mention (#design cards) → filter; imperative (“tag with #design”) → command  
-        7. **Stop‑words** – ignore “card(s)” in keyword searches  
-        8. **No duplication** – a name in a command must not appear as a filter  
-        ---
+        - **Filters vs. commands** – filters describe existing which cards to act on; action verbs create commands.
+        - Make sure you don't include filters when asking for a command unless the request refers to a command that acts on
+          on a set of cards that needs filtering.
+            * E.g: Don't confuse the `/assign` command with the `assignee_ids` filter.
+        - **Numbers**  
+            * card 123 → `card_ids: [ 123 ]`  
+            * 123 → `/search 123`  
+            * package 123 → `/search package 123`
+        - Prefer /search for searching over the `terms` filter.
+            * Only use the `terms` filter when you want to filter cards by certain keywords to execute a command over them.
+        - A request can result in generating multiple commands.  
+        - **Completed / closed** – “completed cards” → `indexed_by:"closed"`; add `closure` only with time‑range  
+        - **“My …”** – “my cards” → `assignee_ids:["#{ME_REFERENCE}"]`  
+        - **Unassigned** – use `assignment_status:"unassigned"` **only** when the user explicitly asks for unassigned cards.  
+        - **Tags** – past‑tense mention (#design cards) → filter; imperative (“tag with #design”) → command  
+        - **Stop‑words** – ignore “card(s)” in keyword searches  
+        - **No duplication** – a name in a command must not appear as a filter
+        - If no command inferred, use /search to search the query expression verbatim.  
 
-        ## 4 · Examples
+        ## Examples
 
         ### Filters only
 
@@ -124,7 +151,7 @@ class Command::Ai::Translator
 
         - closed cards  → { context: { indexed_by: "closed" } }
         - recent cards  → { context: { indexed_by: "newest" } }
-        - recently active cards  → { context: { indexed_by: "latest" } }
+        - cards with recent activity  → { context: { indexed_by: "latest" } }
         - stagnated cards  → { context: { indexed_by: "stalled" } }
         - falling back soon cards  → { context: { indexed_by: "falling_back_soon" } }
         - cards to be reconsidered soon  → { context: { indexed_by: "falling_back_soon" } }
@@ -148,11 +175,19 @@ class Command::Ai::Translator
 
         - close 123  → { context: { card_ids: [ 123 ] }, commands: ["/close"] }
         - close 123 456 → { context: { card_ids: [ 123, 456 ] }, commands: ["/close"] }
+        - close too large → { commands: ["/close too large"] } 
+        - close as duplicated → { commands: ["/close duplicated"] } 
 
         #### Assign cards
 
         - assign 123 to jorge  → { context: { card_ids: [ 123 ] }, commands: ["/assign jorge"] }
         - assign 123 to me  → { context: { card_ids: [ 123 ] }, commands: ["/assign #{ME_REFERENCE}"] }
+        - assign to mike  → { commands: ["/assign mike"] }
+
+        #### Tag cards
+
+        - tag with #critical  → { commands: ["/tag #critical"] }
+        - tag with bug  → { commands: ["/tag #bug"] }
 
         #### Assign cards to stages
 
@@ -176,7 +211,8 @@ class Command::Ai::Translator
 
         ### Filters and commands combined
 
-        - assign john to the current #design cards assigned to mike and tag them with #v2  → { context: { assignee_ids: ["mike"], tag_ids: ["design"] }, commands: ["/assign john", "/tag v2"] }
+        - assign john to the current #design cards and tag them with #v2  → { context: { tag_ids: ["design"] }, commands: ["/assign john", "/tag #v2"] }
+        - close cards assigned to mike and assign them to roger → { context: {assignee_ids: ["mike"]}, commands: ["/close", "/assign roger"] }
       PROMPT
     end
 

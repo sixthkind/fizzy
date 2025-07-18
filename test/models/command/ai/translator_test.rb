@@ -7,15 +7,15 @@ class Command::Ai::TranslatorTest < ActionDispatch::IntegrationTest
     @user = users(:david)
   end
 
-  vcr_record!
-
   test "filter by assignments" do
     # List context
     assert_command({ context: { assignee_ids: [ "jz" ] } }, "cards assigned to jz")
+    assert_command({ context: { assignee_ids: [ "kevin" ] } }, "stuff assigned to kevin")
     assert_command({ context: { assignee_ids: [ "jz" ] } }, "assigned to jz")
     assert_command({ context: { assignment_status: "unassigned" } }, "unassigned cards")
     assert_command({ context: { assignment_status: "unassigned" } }, "not assigned")
     assert_command({ context: { assignee_ids: [ "jorge" ], terms: [ "performance" ] } }, "cards about performance assigned to jorge")
+    assert_command({ context: {assignee_ids: ["jz"], indexed_by: "latest"} }, "stuff that jz has done lately")
 
     # Card context
     assert_command({ context: { assignee_ids: [ "jz" ] } }, "cards assigned to jz", context: :card)
@@ -47,7 +47,7 @@ class Command::Ai::TranslatorTest < ActionDispatch::IntegrationTest
   test "filter by card id" do
     assert_command({ context: { card_ids: [ 123 ] } }, "card 123")
     assert_command({ context: { card_ids: [ 123, 456 ] } }, "card 123, 456")
-    assert_command({ context: { terms: [ "123" ] } }, "123") # Notice existing cards will be intercepted earlier
+    assert_command({ commands: ["/search 123"] }, "123") # Notice existing cards will be intercepted earlier
   end
 
   test "filter by time ranges" do
@@ -141,7 +141,7 @@ class Command::Ai::TranslatorTest < ActionDispatch::IntegrationTest
 
   test "default to search" do
     assert_command({ commands: [ "/search backups" ] }, "backups")
-    assert_command({ context: { terms: [ "backups" ] } }, "cards about backups")
+    assert_command({ commands: [ "/search backups" ] }, "cards about backups")
   end
 
   test "combine commands and filters" do
@@ -149,14 +149,14 @@ class Command::Ai::TranslatorTest < ActionDispatch::IntegrationTest
       { context: { card_ids: [ 176, 170 ] }, commands: [ "/do", "/assign #{users(:david).to_gid}", "/stage Investigating" ] },
       "Move 176 and 170 to doing, assign to me and set the stage to Investigating")
     assert_command(
-      { context: { assignee_ids: [ "jz" ], tag_ids: [ "design" ] }, commands: [ "/assign andy", "/tag v2" ] },
-      "assign andy to the current #design cards assigned to jz and tag them with #v2")
+      { context: { tag_ids: [ "design" ] }, commands: [ "/assign andy", "/tag #v2" ] },
+      "assign andy to the current #design cards and tag them with #v2")
     assert_command(
       { context: { assignee_ids: [ "andy" ] }, commands: [ "/close", "/assign kevin" ] },
       "close cards assigned to andy and assign them to kevin")
     assert_command(
-      { context: { tag_ids: [ "design" ], assignee_ids: [ "jz" ] }, commands: [ "/assign andy", "/tag v2" ] },
-      "assign cards tagged with #design assigned to jz to andy and tag them with #v2")
+      { context: { tag_ids: [ "design" ] }, commands: [ "/assign andy", "/tag #v2" ] },
+      "assign cards tagged with #design to andy and tag them with #v2")
   end
 
   private
