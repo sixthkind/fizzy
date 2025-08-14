@@ -20,13 +20,11 @@
     &.orient-left {
       inset-inline: auto 0;
       transform: translateX(0);
-      background: lime !important;
     }
 
     &.orient-right {
       inset-inline: 0 auto;
       transform: translateX(0);
-      background: gold !important;
     }
 
     &:has(.popup__footer) {
