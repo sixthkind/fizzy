@@ -80,7 +80,6 @@
     display: block;
     padding: 0;
     transition: opacity 100ms ease-out;
-    z-index: calc(var(--z-tray) + 1);
 
     .icon {
       color: var(--color-ink);
