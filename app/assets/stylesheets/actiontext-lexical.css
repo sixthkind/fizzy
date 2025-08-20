@@ -32,7 +32,7 @@
         white-space: pre-line;
       }
 
-      /* Disable the sublit button when Lexical is empty */
+      /* Disable the submit button when Lexical is empty */
       + .comment__submit {
         opacity: 0.5;
         pointer-events: none;
