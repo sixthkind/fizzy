@@ -5,14 +5,14 @@ class Notification::Bundle < ApplicationRecord
 
   scope :due, -> { pending.where("ends_at <= ?", Time.current) }
   scope :containing, ->(notification) { where("starts_at <= ? AND ends_at > ?", notification.created_at, notification.created_at) }
-  scope :overlapping_with, ->(other_bundle) {
+  scope :overlapping_with, ->(other_bundle) do
     where(
       "(starts_at <= ? AND ends_at >= ?) OR (starts_at <= ? AND ends_at >= ?) OR (starts_at >= ? AND ends_at <= ?)",
       other_bundle.starts_at, other_bundle.starts_at,
       other_bundle.ends_at, other_bundle.ends_at,
       other_bundle.starts_at, other_bundle.ends_at
     )
-  }
+  end
 
   before_create :set_default_window
 
