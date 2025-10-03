@@ -31,8 +31,7 @@ class Collection::AccessibleTest < ActiveSupport::TestCase
     assert_equal User.all, collection.users.reload
   end
 
-
-  test "watched_by? when notifications are set on the collection" do
+  test "collection watchers" do
     collections(:writebook).access_for(users(:kevin)).watching!
     assert_includes collections(:writebook).watchers, users(:kevin)
 
