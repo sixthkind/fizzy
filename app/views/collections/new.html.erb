@@ -1,4 +1,4 @@
-<% @page_title = "Create a new collection" %>
+<% @page_title = "Create a new Board" %>
 
 <% content_for :header do %>
   <%= render "filters/menu" %>
@@ -6,7 +6,7 @@
 
 <div class="panel shadow center" style="--panel-size: 55ch; view-transition-name: new-collection">
   <%= form_with model: @collection, class: "flex flex-column gap txt-large", data: { controller: "form" } do |form| %>
-    <h2 class="txt-x-large">Create a new collection</h2>
+    <h2 class="txt-x-large"><%= @page_title %></h2>
     <label class="flex align-center gap">
       <%= form.text_field :name, required: true, class: "input full-width", autofocus: true, autocomplete: "off",placeholder: "Give it a name…", data: { action: "keydown.esc@document->form#cancel" } %>
     </label>

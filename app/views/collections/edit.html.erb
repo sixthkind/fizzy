@@ -1,4 +1,4 @@
-<% @page_title = "Collection Settings" %>
+<% @page_title = "Board Settings" %>
 
 <% content_for :header do %>
   <%= render "filters/menu" %>
@@ -18,7 +18,7 @@
   <div class="settings__panel settings__panel--users panel shadow center">
     <header>
       <h2 class="divider txt-large">Name and Access</h2>
-      <div>Choose who can access this Collection</div>
+      <div>Choose who can access this Board</div>
     </header>
 
     <%= form_with model: @collection, class: "display-contents", data: {
