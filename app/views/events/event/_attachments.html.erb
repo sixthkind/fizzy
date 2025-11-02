@@ -1,4 +1,4 @@
-<% if eventable&.has_attachments? %>
+<% if eventable&.has_attachments? || eventable&.has_remote_images? %>
   <span class="event_attachments margin-block-half flex align-center gap-half">
     <% eventable.attachments.each do |attachment| %>
       <% variant = Attachments::VARIANTS[:small] %>
@@ -14,6 +14,10 @@
           <span class="attachment__icon"><%= attachment.filename.extension&.downcase.presence || "unknown" %></span>
         </div>
       <% end %>
+    <% end %>
+
+    <% eventable.remote_images.each do |remote_image| %>
+      <%= image_tag remote_image.url, class: "attachment attachment--image", width: remote_image.width, height: remote_image.height, alt: remote_image.alt %>
     <% end %>
   </span>
 <% end %>
