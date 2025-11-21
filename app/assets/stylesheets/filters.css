@@ -1,4 +1,8 @@
 @layer components {
+  #header:has(.filters) {
+    position: relative;
+  }
+
   .filters {
     align-items: center;
     display: flex;
@@ -13,10 +17,10 @@
       --btn-border-color: var(--color-ink-medium);
       --input-background: var(--color-canvas);
     }
-  }
 
-  #header:has(.filters) {
-    position: relative;
+    &:has(.filter-toggle:hover) {
+      z-index: calc(var(--z-nav) + 1);
+    }
   }
 
   .filter {
@@ -169,6 +173,18 @@
 
   .filters--has-filters-set .filters__manage {
     display: flex;
+  }
+
+  .filters__show-when-expanded {
+    .filters:not(.filters--expanded) & {
+      display: none;
+    }
+  }
+
+  .filters__show-when-collapsed {
+    .filters--expanded & {
+      display: none;
+    }
   }
 }
 
