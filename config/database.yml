@@ -27,6 +27,7 @@ default: &default
   timeout: 5000
   variables:
     transaction_isolation: READ-COMMITTED
+  <% end %>
 
 development:
   <% if use_sqlite %>
