@@ -4,12 +4,14 @@ class SignupTest < ActiveSupport::TestCase
   test "#create_identity" do
     signup = Signup.new(email_address: "brian@example.com")
 
+    magic_link = nil
     assert_difference -> { Identity.count }, 1 do
       assert_difference -> { MagicLink.count }, 1 do
-        assert signup.create_identity
+        magic_link = signup.create_identity
       end
     end
 
+    assert_kind_of MagicLink, magic_link
     assert_empty signup.errors
     assert signup.identity
     assert signup.identity.persisted?
@@ -18,9 +20,11 @@ class SignupTest < ActiveSupport::TestCase
 
     assert_no_difference -> { Identity.count } do
       assert_difference -> { MagicLink.count }, 1 do
-        assert signup_existing.create_identity, "Should send magic link for existing identity"
+        magic_link = signup_existing.create_identity
       end
     end
+
+    assert_kind_of MagicLink, magic_link
 
     signup_invalid = Signup.new(email_address: "")
     assert_raises do
